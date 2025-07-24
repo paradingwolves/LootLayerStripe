@@ -6,7 +6,17 @@ require('dotenv').config();
 const app = express();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+app.use(cors({ origin: '*', credentials: true }));
+
+// Log incoming requests with method, path, origin, and body (for POST)
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl} from origin: ${req.headers.origin || 'unknown'}`);
+  if (req.method === 'POST') {
+    console.log('Request body:', req.body);
+  }
+  next();
+});
+
 app.use(express.json());
 
 app.post('/create-payment-intent', async (req, res) => {
@@ -23,7 +33,7 @@ app.post('/create-payment-intent', async (req, res) => {
 
     res.json({ clientSecret: paymentIntent.client_secret });
   } catch (err) {
-    console.error(err);
+    console.error('PaymentIntent creation error:', err);
     res.status(500).json({ error: 'PaymentIntent creation failed' });
   }
 });
