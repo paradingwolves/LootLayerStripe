@@ -6,7 +6,7 @@ require('dotenv').config();
 const app = express();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-app.use(cors({ origin: '*', credentials: true }));
+app.use(cors({ origin: 'https://lootlayer.ca', credentials: true }));
 
 // Log incoming requests with method, path, origin, and body (for POST)
 app.use((req, res, next) => {
