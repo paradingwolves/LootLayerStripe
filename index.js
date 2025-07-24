@@ -6,7 +6,24 @@ require('dotenv').config();
 const app = express();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-app.use(cors({ origin: 'https://ecommerce-website-hpl7.vercel.app', credentials: true }));
+
+const allowedOrigins = [
+  'https://lootlayer.ca',
+  'https://www.lootlayer.ca',
+  'https://ecommerce-website-hpl7.vercel.app', // if applicable
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
+
 
 // Log incoming requests with method, path, origin, and body (for POST)
 app.use((req, res, next) => {
