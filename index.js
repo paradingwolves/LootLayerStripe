@@ -6,11 +6,7 @@ require('dotenv').config();
 const app = express();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-app.use(cors({
-  origin: 'https://lootlayer.ca', // Match full domain, not just one route
-  credentials: true
-}));
-
+app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(express.json());
 
 app.post('/create-payment-intent', async (req, res) => {
